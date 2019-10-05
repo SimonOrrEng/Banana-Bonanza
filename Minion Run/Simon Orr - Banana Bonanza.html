@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <style>
+        canvas {
+            border-width: 0px;
+            border-style: ridge;
+            border-color: #FF0000;
+        }
+    </style>
+
+</head>
+<title>Banana Bonanza</title>
+
+<body>
+    <canvas id="minionCanvas" width="1340" height="595"></canvas>
+</body>
+
+<script>
+
+    var canvas = document.getElementById("minionCanvas")
+    var ctx = canvas.getContext("2d");
+    var canvasWidth = canvas.width;
+    var canvasHeight = canvas.height;
+
+    var bgReady = false;
+    var bgImage = new Image();
+    bgImage.onload = function () {
+        bgReady = true;
+    };
+    bgImage.src = "images/background.png"; 
+
+    var bgReady2 = false;
+    var bgImage2 = new Image();
+    bgImage2.onload = function () {
+        bgReady2 = true;
+    };
+    bgImage2.src = "images/background.png"; 
+
+    var minionReady = false;
+    var minionImage = new Image();
+    minionImage.onload = function () {
+    minionReady = true;
+    };
+    minionImage.src = "images/minion.png";
+
+    var minion2Ready = false;
+    var minion2Image = new Image();
+    minion2Image.onload = function () {
+    minion2Ready = true;
+    };
+    minion2Image.src = "images/minion2.png";
+
+    var wrenchReady = false;
+    var wrenchImage = new Image();
+    wrenchImage.onload = function () {
+        wrenchReady = true;
+    };
+    wrenchImage.src = "images/wrench.png"
+
+    var nbReady = false;
+    var nbImage = new Image();
+    nbImage.onload = function () {
+        nbReady = true;
+    };
+    nbImage.src = "images/nutsandbolts.png"
+
+    var mx = 0;
+    var my = 300;
+    var mdx = 0;
+    var mdy = 0;
+    var mspeed = 2.25;
+    var mlives = 3; 
+
+    var m2x = 400;
+    var m2y = 300;
+    var m2dx = 0;
+    var m2dy = 0;
+    var m2speed = 2.25;
+    var m2lives = 3; 
+
+    var nbx = Math.floor(Math.random() * canvasWidth);
+    var nby = Math.floor(Math.random() * canvasHeight);
+    var nutsandboltsCollected = 0;
+    var nutsandbolts2Collected = 0;
+    var timeElapsed = 0;
+    var bgx= 0;
+    var bgx2= 1340;
+    
+
+    var wx = 1350;
+    var wy = 600;
+    var wspeed = 0.50;
+    var wdx = wspeed - 1;
+    var wdy = wspeed;
+
+    var rightPressed = false;
+    var leftPressed = false;
+    var upPressed = false;
+    var downPressed = false;
+
+    var right2Pressed = false;
+    var left2Pressed = false;
+    var up2Pressed = false;
+    var down2Pressed = false;
+
+    document.addEventListener("keydown", keyDownHandler, false);
+    document.addEventListener("keyup", keyUpHandler, false);
+
+    function keyDownHandler(e) {
+        if (e.keyCode == 68) {
+            rightPressed = true;
+        } else if (e.keyCode == 65) {
+            leftPressed = true;
+        } else if (e.keyCode == 87) {
+            upPressed = true;
+        } else if (e.keyCode == 83) {
+            downPressed = true;
+        }
+        if (e.keyCode == 39) {
+            right2Pressed = true;
+        } else if (e.keyCode == 37) {
+            left2Pressed = true;
+        } else if (e.keyCode == 38) {
+            up2Pressed = true;
+        } else if (e.keyCode == 40) {
+            down2Pressed = true;
+        }
+    }
+
+    function keyUpHandler(e) {
+        if (e.keyCode == 68) {
+            rightPressed = false;
+        } else if (e.keyCode == 65) {
+            leftPressed = false;
+        } else if (e.keyCode == 87) {
+            upPressed = false;
+        } else if (e.keyCode == 83) {
+            downPressed = false;
+        }
+        if (e.keyCode == 39) {
+            right2Pressed = false;
+        } else if (e.keyCode == 37) {
+            left2Pressed = false;
+        } else if (e.keyCode == 38) {
+            up2Pressed = false;
+        } else if (e.keyCode == 40) {
+            down2Pressed = false;
+        }
+    }
+
+    function timer(){
+        timeElapsed = timeElapsed + 1
+        bgx = bgx - 1
+        bgx2 = bgx2 - 1
+
+        if (bgx < -1340){
+            bgx2 = 0
+            bgx = 1340
+        }
+
+        if (bgx2 < -1340){
+            bgx = 0
+            bgx2 = 1340
+        }
+        wy = wy + 0.50
+        if (wy > canvasHeight){
+            wy = 0 - wrenchImage.height
+            wx = Math.floor(Math.random() * (canvasWidth - wrenchImage.width));
+        }
+    }
+    function draw() {
+        if (bgReady) {
+            ctx.drawImage(bgImage, bgx, 0);
+        }
+        if (bgReady2) {
+            ctx.drawImage(bgImage2, bgx2, 0);
+        }
+        if (minionReady) {
+            ctx.drawImage(minionImage, mx, my);
+        }
+        if (minion2Ready) {
+            ctx.drawImage(minion2Image, m2x, m2y);
+        }
+        if (nbReady) {
+            ctx.drawImage(nbImage, nbx, nby);
+        }
+        if (wrenchReady) {
+            ctx.drawImage(wrenchImage, wx, wy);
+        }
+
+        if (rightPressed == true) {
+            mdx = mspeed;
+        } else if (leftPressed == true) {
+            mdx = -mspeed;
+        } else if (upPressed == true) {
+            mdy = -mspeed;
+        } else if (downPressed == true) {
+            mdy = mspeed
+        }
+        if (right2Pressed == true) {
+            m2dx = m2speed;
+        } else if (left2Pressed == true) {
+            m2dx = -m2speed;
+        } else if (up2Pressed == true) {
+            m2dy = -m2speed;
+        } else if (down2Pressed == true) {
+            m2dy = m2speed
+        }
+
+        if (mx <= (nbx + nbImage.width) && nbx <= (mx + minionImage.width)) {
+            if (my <= (nby + nbImage.height) && nby <= (my + minionImage.height)) {
+                nutsandboltsCollected = nutsandboltsCollected + 1;
+                nbx = Math.floor(Math.random() * (canvasWidth - nbImage.width));
+                nby = Math.floor(Math.random() * (canvasHeight - nbImage.height));
+            }
+        }
+
+        if (m2x <= (nbx + nbImage.width) && nbx <= (m2x + minion2Image.width)) {
+            if (m2y <= (nby + nbImage.height) && nby <= (m2y + minion2Image.height)) {
+                nutsandbolts2Collected = nutsandbolts2Collected + 1;
+                nbx = Math.floor(Math.random() * (canvasWidth - nbImage.width));
+                nby = Math.floor(Math.random() * (canvasHeight - nbImage.height));
+            }
+        }
+
+        if (mx <= (wx + wrenchImage.width) && wx <= (mx + minionImage.width)) {
+            if (my <= (wy + wrenchImage.height) && wy <= (my + minionImage.height)) {
+                mlives = mlives - 1;
+                wx = Math.floor(Math.random() * (canvasWidth - wrenchImage.width));
+                wy = Math.floor(Math.random() * (canvasHeight - wrenchImage.height));
+            }
+        }
+
+                if (m2x <= (wx + wrenchImage.width) && wx <= (m2x + minion2Image.width)) {
+            if (m2y <= (wy + wrenchImage.height) && wy <= (m2y + minion2Image.height)) {
+                m2lives = m2lives - 1;
+                wx = Math.floor(Math.random() * (canvasWidth - wrenchImage.width));
+                wy = Math.floor(Math.random() * (canvasHeight - wrenchImage.height));
+            }
+        }
+
+        if (rightPressed == false && leftPressed == false && upPressed == false && downPressed == false) {
+            mdx = 0;
+            mdy = 0;
+        }
+        if (right2Pressed == false && left2Pressed == false && up2Pressed == false && down2Pressed == false) {
+            m2dx = 0;
+            m2dy = 0;
+        }
+        mx = mx + mdx;
+        my = my + mdy;
+        m2x = m2x + m2dx;
+        m2y = m2y + m2dy;
+            
+        if (mx > 1171) {
+            mx=1171;
+        }
+        if (mx < 0){
+            mx=0;
+        }   
+        if (my > 365) {
+            my = 365;
+        }
+        if (my < 0){
+            my = 0;
+        }   
+        if (m2x > 1171) {
+            m2x=1171;
+        }
+        if (m2x < 0){
+            m2x=0;
+        }   
+        if (m2y > 365) {
+            m2y = 365;
+        }
+        if (m2y < 0){
+            m2y = 0;
+        }
+
+        if (mlives == 0) {
+            alert("You died! Unfortunate. You collected " + nutsandboltsCollected + " nuts and bolts");
+            reset();
+        }
+
+        if (m2lives == 0) {
+            alert("Player2 died! Unfortunate. You collected " + nutsandbolts2Collected + " nuts and bolts");
+            reset();
+        }
+
+        if (nutsandboltsCollected == 25) {
+            alert("Player 1 Wins! Congratulations! You collected " + nutsandboltsCollected + " nuts and bolts.");
+            reset();
+        }
+
+        if (nutsandbolts2Collected == 25) {
+            alert("Player 2 Wins! Congratulations! You collected " + nutsandbolts2Collected + " nuts and bolts.");
+            reset();
+        }
+
+        ctx.font = "36px Comic Sans MS";
+        ctx.fillStyle = 'yellow';
+        var nutsandboltsObtained = "Score: " + nutsandboltsCollected;
+        ctx.fillText(nutsandboltsObtained, 200, 50);
+
+        ctx.font = "36px Comic Sans MS";
+        ctx.fillStyle = 'yellow';
+        var nutsandbolts2Obtained = "Score: " + nutsandbolts2Collected;
+        ctx.fillText(nutsandbolts2Obtained, 625, 50);
+
+        ctx.font = "36px Comic Sans MS";
+        ctx.fillStyle = 'yellow';
+        var monkey2lives = "Lives: " + m2lives;
+        ctx.fillText(monkey2lives, 825, 50);
+
+        ctx.font = "36px Comic Sans MS";
+        ctx.fillStyle = 'yellow';
+        var monkeylives = "Lives: " + mlives;
+        ctx.fillText(monkeylives, 425, 50);
+    }
+
+        function reset() {
+        mx = canvasWidth / 2; 
+        my = canvasHeight / 2;
+        mdx = 0; 
+        mdy = 0;
+        mspeed = 2; 
+        mlives = 3; 
+        m2x = canvasWidth / 2; 
+        m2y = canvasHeight / 2;
+        m2dx = 0; 
+        m2dy = 0;
+        m2speed = 2; 
+        m2lives = 3; 
+        wx = 400;
+        wy = 300;
+        wspeed = 2;
+        wdx = cspeed - 1;
+        wdy = cspeed;
+        rightPressed = false;
+        leftPressed = false;
+        upPressed = false;
+        downPressed = false;
+        right2Pressed = false;
+        left2Pressed = false;
+        up2Pressed = false;
+        down2Pressed = false;
+        nutsandboltsCollected = 0;
+        nutsandbolts2Collected = 0;
+        timeElapsed = 0;
+    }
+
+    setInterval(draw, 10);
+    setInterval(timer, 2);
+</script>
+</html>
